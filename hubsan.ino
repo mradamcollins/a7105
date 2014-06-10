@@ -189,7 +189,7 @@ static u16 hubsan_cb()
     case BIND_3:
     case BIND_5:
     case BIND_7:
-        //Serial.println("Clause 1");
+//        Serial.println("Clause 1");
         hubsan_build_bind_packet(state == BIND_7 ? 9 : (state == BIND_5 ? 1 : state + 1 - BIND_1));
         A7105_Strobe(A7105_STANDBY);
         A7105_WriteData(packet, 16, channel);
@@ -199,7 +199,7 @@ static u16 hubsan_cb()
     case BIND_3 | WAIT_WRITE:
     case BIND_5 | WAIT_WRITE:
     case BIND_7 | WAIT_WRITE:
-        //Serial.println("Clause 2");
+//        Serial.println("Clause 2");
         //wait for completion
         for(i = 0; i< 20; i++) {
           if(! (A7105_ReadReg(A7105_00_MODE) & 0x01))
@@ -214,11 +214,11 @@ static u16 hubsan_cb()
     case BIND_2:
     case BIND_4:
     case BIND_6:
-        //Serial.println("Clause 3");
+//        Serial.println("Clause 3");
         
         if(A7105_ReadReg(A7105_00_MODE) & 0x01) {
             state = BIND_1; //
-            if (verbose) Serial.println("Restart");
+//            if (verbose) Serial.println("Restart");
             return 4500; //No signal, restart binding procedure.  12msec elapsed since last write
         } 
 
@@ -231,15 +231,19 @@ static u16 hubsan_cb()
         }
         return 500;  //8msec elapsed time since last write;
     case BIND_8:
-        //Serial.println("Clause 4");
+//        Serial.println("Clause 4");
         if(A7105_ReadReg(A7105_00_MODE) & 0x01) {
+//            Serial.println("bind 7");
             state = BIND_7;
             return 15000; //22.5msec elapsed since last write
         }
         A7105_ReadData(packet, 16);
        // test to see what is being received
+//       Serial.println("printing packet");
+
        printpacket(packet);
-        if(packet[1] == 9) {
+        if(packet[1] == 8) {
+           Serial.println("Going to data");
             RED_OFF();
             BLUE_ON();
             state = DATA_1; // shift to data mode
@@ -251,7 +255,7 @@ static u16 hubsan_cb()
             return 15000; //22.5 msec elapsed since last write
         }
     case DATA_1:
-        //Serial.println("Clause 5");
+//        Serial.println("Clause 5");
         //Keep transmit power in sync
         A7105_SetPower(TXPOWER_150mW);
     case DATA_2:
@@ -269,7 +273,7 @@ static u16 hubsan_cb()
           cycles++;
         }
           
-        //Serial.println("Clause 6");
+//        Serial.println("Clause 6");
         hubsan_build_packet();
         A7105_WriteData(packet, 16, state == DATA_5 ? channel + 0x23 : channel);
         if (state == DATA_5)

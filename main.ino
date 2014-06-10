@@ -8,7 +8,7 @@
 uint8_t startval, command;
   
 void setup() {
-  verbose = false;
+  verbose = true;
   pinMode(RED_LED, OUTPUT);
   pinMode(BLUE_LED, OUTPUT);
   RED_OFF();
@@ -34,42 +34,58 @@ void loop() {
     startTime = micros();
 
     // don't attempt to read from serial unless there is data being sent
-    if (Serial.available() > 4) {
-
-      // work through data on serial until we find the start of a packet
-      do {
-          startval = Serial.read();
+//    if (Serial.available() > 4) {
+//      if (verbose) Serial.println("Reading Data");
+//      do {
+//          startval = Serial.read();
+//      }
+//      while (startval != CONTROL_PACKET && Serial.available() > 0);// && startval != SETTING_PACKET);
+//      if (verbose) {
+//        Serial.print("StartVal: "); 
+//        Serial.println(startval);
+//      }
+//
+//      if (startval == CONTROL_PACKET) {
+//          throttle=Serial.read();
+//          rudder=Serial.read();
+//          aileron=Serial.read();
+//          elevator=Serial.read();
+//          if (verbose) {
+//              Serial.print("throttle: "); Serial.println(throttle);
+//              Serial.print("rudder: ");   Serial.println(rudder);
+//              Serial.print("aileron: ");  Serial.println(aileron);
+//              Serial.print("elevator: "); Serial.println(elevator);
+//          }
+//      }
+//      
+//
+//      else if (startval == SETTING_PACKET) {
+//          command = Serial.read();
+//          if (command == LEDS_ON) {
+//              drone_settings |= 0x04;
+//          }
+//          else if (command == LEDS_OFF) {
+//              drone_settings &= ~0x04;
+//          }
+//          else if (command == FLIPS_ON) {
+//              drone_settings |= 0x08;
+//          }
+//          else if (command == FLIPS_OFF) {
+//              drone_settings &= ~0x08;
+//          }
+//          
+//          // clear unused bytes
+//          for ( int i = 0 ; i < 3 ; i++)
+//              Serial.read();
+//      }
+//    }
+//    
+      if (Serial.available() > 0)
+      {
+        throttle = Serial.parseInt();
+        Serial.println(throttle);
+        
       }
-      while (startval != CONTROL_PACKET && startval != SETTING_PACKET);
-
-      if (startval == CONTROL_PACKET) {
-          throttle=Serial.read();
-          rudder=Serial.read();
-          aileron=Serial.read();
-          elevator=Serial.read();
-      }
-
-      else if (startval == SETTING_PACKET) {
-          command = Serial.read();
-          if (command == LEDS_ON) {
-              drone_settings |= 0x04;
-          }
-          else if (command == LEDS_OFF) {
-              drone_settings &= ~0x04;
-          }
-          else if (command == FLIPS_ON) {
-              drone_settings |= 0x08;
-          }
-          else if (command == FLIPS_OFF) {
-              drone_settings &= ~0x08;
-          }
-          
-          // clear unused bytes
-          for ( int i = 0 ; i < 3 ; i++)
-              Serial.read();
-      }
-    }
-    
     // print information about which state the RF dialogue os currently in
     //Serial.print("State: ");
     //Serial.println(state);
@@ -90,11 +106,11 @@ void loop() {
     startTime = micros();
   
   
-  //Serial.println(A7105_ReadReg(0x00)); 
-  //A7105_shoutchannel();
-  //A7105_sniffchannel();
+//  Serial.println(A7105_ReadReg(0x00)); 
+//  A7105_shoutchannel();
+//  A7105_sniffchannel();
   
-  //A7105_scanchannels(allowed_ch);
-  //eavesdrop();
+//  A7105_scanchannels(allowed_ch);
+//  eavesdrop();
 }
 
